@@ -1,0 +1,137 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Femboys: Una mirada cultural</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        header {
+            background-color: #ff99cc;
+            color: white;
+            text-align: center;
+            padding: 2em;
+        }
+        nav {
+            background-color: #333;
+            padding: 1em;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 1em;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #ff99cc;
+        }
+        section {
+            padding: 2em;
+            margin: 1em auto;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1em auto;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #ff99cc;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Femboys: Una mirada cultural</h1>
+    </header>
+    <nav>
+        <a href="#historia">Historia</a>
+        <a href="#cultura">Cultura</a>
+        <a href="#impacto">Impacto</a>
+    </nav>
+    <section id="historia">
+        <h2>Historia de los Femboys</h2>
+        <p>El término "femboy" se refiere a personas, generalmente hombres, que adoptan una estética y comportamiento considerados tradicionalmente femeninos. Su origen moderno se encuentra en subculturas en línea y comunidades de moda, donde la expresión de género fluida ha ganado visibilidad.</p>
+        <img src="images/historia1.jpg" alt="Evolución de la moda femboy">
+        <p>La historia de los femboys está ligada a movimientos de moda y cultura pop, especialmente en Japón con estilos como el "bishōnen" y en Occidente con la moda andrógina.</p>
+        <img src="images/historia2.jpg" alt="Femboy en la moda moderna">
+    </section>
+    <section id="cultura">
+        <h2>Cultura y Comunidad</h2>
+        <p>La cultura femboy abarca una amplia gama de expresiones, desde la moda hasta el arte y los medios. Las comunidades en línea, como las de Reddit y Discord, han sido fundamentales para su popularidad, proporcionando espacios seguros para la autoexpresión.</p>
+        <img src="images/cultura1.jpg" alt="Comunidad femboy en eventos">
+        <p>Los femboys suelen desafiar las normas de género tradicionales, promoviendo una visión más inclusiva de la masculinidad y la feminidad.</p>
+        <img src="images/cultura2.jpg" alt="Expresión artística femboy">
+    </section>
+    <section id="impacto">
+        <h2>Impacto en la Sociedad</h2>
+        <p>El movimiento femboy ha influido en la moda, el entretenimiento y las discusiones sobre género. Ha inspirado a muchas personas a explorar su identidad y a cuestionar los estereotipos tradicionales.</p>
+        <img src="images/impacto1.jpg" alt="Femboys en la moda mainstream">
+        <p>Su presencia en los medios ha ayudado a normalizar la diversidad de género y a fomentar conversaciones sobre la aceptación y la libertad de expresión.</p>
+        <img src="images/impacto2.jpg" alt="Femboys en los medios">
+    </section>
+    <footer>
+        <p>&copy; 2025 Femboy Culture. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
